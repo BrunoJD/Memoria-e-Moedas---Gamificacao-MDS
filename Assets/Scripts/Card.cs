@@ -34,6 +34,7 @@ public class Card : MonoBehaviour
 
         Tween.Delay(0.15f, () => {
             imagemPrincipal.sprite = spriteEscondido; 
+            transform.localScale = new Vector3(-1, 1, 1); 
             idCarta.gameObject.SetActive(false); 
             isSelected = true;
         });
@@ -44,6 +45,7 @@ public class Card : MonoBehaviour
 
         Tween.Delay(0.15f, () => {
             imagemPrincipal.sprite = spriteVerso;
+            transform.localScale = new Vector3(1, 1, 1);
             idCarta.gameObject.SetActive(true);
             isSelected = false;
         });

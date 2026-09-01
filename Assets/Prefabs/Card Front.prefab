@@ -95,8 +95,11 @@ MonoBehaviour:
   idCarta: {fileID: 2902158598432635640}
   spriteVerso: {fileID: -6695753113692380490, guid: e42ec207cc5a200439004e260166f2d1, type: 3}
   spriteEscondido: {fileID: 0}
+  encontrada: 0
   isSelected: 0
-  parId: 0
+  conceitoId: 
+  definicaoId: -1
+  tipo: 0
   controller: {fileID: 0}
 --- !u!114 &1960540525877378110
 MonoBehaviour:
@@ -189,7 +192,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 139.7, y: 193.6}
+  m_SizeDelta: {x: 127, y: 176}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5891704351525308243
 CanvasRenderer:
@@ -264,7 +267,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 139.7, y: 50}
+  m_SizeDelta: {x: 127, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3395261881972522700
 CanvasRenderer:
