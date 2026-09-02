@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
     public GameObject vitoria;
     public TextMeshProUGUI contadorPares;
 
-    private void TelaVitoria(){
+    void TelaVitoria(){
         if(paresEncontrados == numeroCartas/2 && !vitoria.activeSelf && !scriptZoomCard.IsZoomShow()){
             vitoria.SetActive(true);
             Tween.Scale(vitoria.transform, Vector3.one, 0.2f);
@@ -21,14 +21,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         numeroCartas = cardsController.GetNumberCards();
         vitoria.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         paresEncontrados = cardsController.GetPairsFound();

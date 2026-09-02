@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuButtons : MonoBehaviour
 {
 
-    public void OnLCreateGameEvent(){
+    public void OnCreateGameEvent(){
         SceneManager.LoadScene("Jogo");
     }
 
