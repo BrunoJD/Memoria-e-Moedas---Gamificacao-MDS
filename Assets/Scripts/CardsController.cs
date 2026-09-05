@@ -14,11 +14,8 @@ public class CardsController : MonoBehaviour
     [SerializeField] Transform gridTransform;
     [SerializeField] Sprite[] spritesConceito;
     [SerializeField] Sprite[] spritesDefinicao;
-
-    List<int[]> listaDeIdConceito = new List<int[]>();
-    List<int> listaDeIdDefinicao = new List<int>();
     List<int> listaDeIdCartas = new List<int>();
-
+    List<Card> listaCartas = new List<Card>();
     Card primeiraCartaSelecionada;
     Card segundaCartaSelecionada;
     int paresEncontrados = 0;
@@ -33,179 +30,160 @@ public class CardsController : MonoBehaviour
     public TMP_Text textoFeedback;
 
     void PrepararCartas(){
-        for (int i = 0; i < GetNumberCards(); i += 5){
-            for (int j = 0; j < 5; j++){
-                listaDeIdConceito.Add(new int[] {i, i+1, i+2, i+3, i+4});
-            }
-        }
+        CriarListaIds();
+        CriarCartas();
+        MisturarCartas();
+    }
 
-        for (int i = 0; i < spritesDefinicao.Length; i++){
-            listaDeIdDefinicao.Add(i);
-        }
+    void CriarListaIds()
+    {
+        listaDeIdCartas.Clear();
 
         for (int i = 0; i < GetNumberCards(); i++){
             listaDeIdCartas.Add(i+1);
         }
-
-        MisturarSpriteConceito(spritesConceito, listaDeIdConceito);
-        MisturarSpriteDefinicao(spritesDefinicao, listaDeIdDefinicao);
-        MisturarIdCartas(listaDeIdCartas);
-        CriarCartas();
-    }
-
-    void MisturarSpriteConceito(Sprite[] listaDePares, List <int[]> listaDeIdPares){
-        for (int i = listaDePares.Length - 1; i>0; i--){
-            int j = Random.Range(0, i+1);
-
-            Sprite temp = listaDePares[i];
-            int[] tempId = listaDeIdPares[i];
-
-            listaDePares[i] = listaDePares[j];
-            listaDeIdPares[i] = listaDeIdPares[j];
-
-            listaDePares[j] = temp;
-            listaDeIdPares[j] = tempId;
-        }
-    }
-
-    void MisturarSpriteDefinicao(Sprite[] listaDePares, List <int> listaDeIdPares){
-        for (int i = listaDePares.Length - 1; i>0; i--){
-            int j = Random.Range(0, i+1);
-
-            Sprite temp = listaDePares[i];
-            int tempId = listaDeIdPares[i];
-
-            listaDePares[i] = listaDePares[j];
-            listaDeIdPares[i] = listaDeIdPares[j];
-
-            listaDePares[j] = temp;
-            listaDeIdPares[j] = tempId;
-        }
-    }
-
-    void MisturarIdCartas(List <int> listaDeIdCartas){
-        for (int i = GetNumberCards() - 1; i>0; i--){
-            int j = Random.Range(0, i+1);
-
-            int tempId = listaDeIdCartas[i];
-            listaDeIdCartas[i] = listaDeIdCartas[j];
-            listaDeIdCartas[j] = tempId;
-        }
     }
 
     void CriarCartas(){
-        for(int i = 0; i < spritesConceito.Length; i++){
-            Card card = Instantiate(cardPrefab, gridTransform);
-            card.setSpriteEscondido(spritesConceito[i]);
-            card.conceitoId = listaDeIdConceito[i];
-            card.tipo = 0;
+        listaCartas.Clear();
+        int idCarta = 0;
 
-            if(listaDeIdCartas[i] < 10){
-                card.idCarta.text = "0"+listaDeIdCartas[i].ToString();
-            }
-            else{
-                card.idCarta.text = listaDeIdCartas[i].ToString();
-            }
+        for (int grupo = 0; grupo < GetNumberGrups(); grupo++){
+            for (int repetirCarta = 0; repetirCarta < 5; repetirCarta++){
+                Card card = Instantiate(cardPrefab, gridTransform);
+                card.setSpriteEscondido(spritesConceito[grupo]);
 
-            card.controller = this;          
+                card.idGroupo = grupo;
+                card.tipo = CardType.Conceito;
+
+                ConfigurarIdCarta(card, listaDeIdCartas[idCarta]);
+
+                card.controller = this;
+                listaCartas.Add(card);
+                idCarta++;
+            }
         }
 
-        for(int i = 0; i < spritesDefinicao.Length; i++){
+        for (int grupo = 0; grupo < GetNumberGrups(); grupo++){
+            for (int definicao = 0; definicao < 5; definicao++){
+                Card card = Instantiate(cardPrefab, gridTransform);
+                int spriteIndice = (grupo*5) + definicao;
+                card.setSpriteEscondido(spritesDefinicao[spriteIndice]);
 
-            Card card = Instantiate(cardPrefab, gridTransform);
-            card.setSpriteEscondido(spritesDefinicao[i]);
-            card.definicaoId = listaDeIdDefinicao[i];
-            card.tipo = 1;
+                card.idGroupo = grupo;
+                card.tipo = CardType.Definicao;
 
-            if(listaDeIdCartas[i+25] < 10){
-                card.idCarta.text = "0"+listaDeIdCartas[i+25].ToString();
+                ConfigurarIdCarta(card, listaDeIdCartas[idCarta]);
+
+                card.controller = this;
+                listaCartas.Add(card);
+                idCarta++;
             }
-            else{
-                card.idCarta.text = listaDeIdCartas[i+25].ToString();
-            }
+        }
+    }
 
-            card.controller = this;
+    void ConfigurarIdCarta(Card card, int id){
+        if (id < 10){
+            card.idCarta.text = "0"+id;
+        } else{
+            card.idCarta.text = id.ToString();
+        }
+    }
+
+    void MisturarCartas(){
+        for (int i = listaCartas.Count-1; i>0; i--){
+            int j = Random.Range(0, i+1);
+
+            Card temp = listaCartas[i];
+            listaCartas[i] = listaCartas[j];
+            listaCartas[j] = temp;
+        }
+
+        for (int i = 0; i < listaCartas.Count; i++){
+            listaCartas[i].transform.SetSiblingIndex(i);
         }
     }
 
     public void Seleciona(Card carta){
-        if(carta.isSelected == false && !scriptZoomCard.IsZoomShow()){
-        
-            print(carta.definicaoId);
-            carta.showCard();
+        if(carta.encontrada) return;
+        if(carta.isSelected) return;
+        if(scriptZoomCard.IsZoomShow()) return;
 
-            if(primeiraCartaSelecionada == null){
-                primeiraCartaSelecionada = carta;
-                scriptZoomCard.SetCard1Sprite(carta);
+        carta.showCard();
 
-                return;
-            }
+        if (primeiraCartaSelecionada == null){
+           primeiraCartaSelecionada = carta;
+           scriptZoomCard.SetCard1Sprite(carta);
+           return; 
+        }
 
-            if(segundaCartaSelecionada == null){
-                segundaCartaSelecionada = carta;
-                scriptZoomCard.SetCard2Sprite(carta);
+        if (segundaCartaSelecionada == null){
+           segundaCartaSelecionada = carta;
+           scriptZoomCard.SetCard2Sprite(carta);
 
-                ChecarPar(primeiraCartaSelecionada, segundaCartaSelecionada);
-                primeiraCartaSelecionada = null;
-                segundaCartaSelecionada = null;
-            }
+           ChecarPar(primeiraCartaSelecionada, segundaCartaSelecionada);
+
+           primeiraCartaSelecionada = null;
+           segundaCartaSelecionada = null;
         }
     }
 
     void ChecarPar(Card carta1, Card carta2){
+        MostrarFeedback();
+
+        if (carta1.tipo == carta2.tipo){
+            ParIncorreto(carta1, carta2);
+            return;
+        }
+
+        if (carta1.idGroupo == carta2.idGroupo){
+            ParCorreto(carta1, carta2);
+        } else{
+            ParIncorreto(carta1, carta2);
+        }
+    }
+
+    void ParCorreto(Card carta1, Card carta2){
+        carta1.encontrada = true;
+        carta2.encontrada = true;
+        paresEncontrados++;
+
+        fundoFeedback.color = new Color32(50, 220, 100, 255);
+        textoFeedback.text = "Par Correto!!";
+    }
+
+    void ParIncorreto(Card carta1, Card carta2){
+        fundoFeedback.color = new Color32(255, 50, 90,255);
+        textoFeedback.text = "Par Incorreto...";
+
+        Tween.Delay(1.5f, () =>
+        {
+            carta1.hideCard();
+            carta2.hideCard();
+        });
+    }
+
+    void MostrarFeedback(){
         Tween.Scale(feedback.transform, Vector3.one, 0.2f).OnComplete(() =>
             Tween.Delay(2f, () => Tween.Scale(feedback.transform, Vector3.zero, 0.2f))
         );
-
-        if (carta1.tipo != carta2.tipo){
-            Card cartaConceito;
-            Card cartaDefinicao;
-
-            if (carta1.tipo == 0){
-                cartaConceito = carta1;
-                cartaDefinicao = carta2;
-            }else{
-                cartaConceito = carta2;
-                cartaDefinicao = carta1;
-            }
-
-            for (int i = 0; i < cartaConceito.conceitoId.Length; i++){
-                if (cartaConceito.conceitoId[i] == cartaDefinicao.definicaoId){
-                    carta1.encontrada = true;
-                    carta2.encontrada = true;
-                    paresEncontrados++;
-                    
-                    fundoFeedback.color = new Color32(50, 220, 100, 255);
-                    textoFeedback.text = "Par Correto!!";
-
-                    return;
-                }
-            }             
-        }
-
-        fundoFeedback.color = new Color32(255, 50, 90, 255);
-        textoFeedback.text = "Par Incorreto...";
     }
 
     public int GetNumberCards(){
         return spritesDefinicao.Length*2;
     }
 
+    public int GetNumberGrups(){
+        return spritesConceito.Length;
+    }
+
     public int GetPairsFound(){
         return paresEncontrados;
     }
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+
+    void Start(){
+        scriptZoomCard = zoomCard.GetComponent<ZoomCards>();
         PrepararCartas();
         gridTransform.gameObject.SetActive(true);
-        scriptZoomCard = zoomCard.GetComponent<ZoomCards>();
-    }    
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    }  
 }

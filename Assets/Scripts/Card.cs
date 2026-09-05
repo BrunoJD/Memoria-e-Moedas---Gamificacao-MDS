@@ -2,22 +2,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using PrimeTween;
-using System.Reflection.Metadata.Ecma335;
+
+public enum CardType {
+    Conceito, Definicao
+}
 
 public class Card : MonoBehaviour
 {
 
     [SerializeField] Image imagemPrincipal;
     [SerializeField] public TextMeshProUGUI idCarta;
-
+    public int idGroupo;
+    public CardType tipo;
     public Sprite spriteVerso;
     public Sprite spriteEscondido;
     public bool encontrada = false;
-    public bool isSelected;
-
-    public int[] conceitoId = null;
-    public int definicaoId = -1;
-    public int tipo;
+    public bool isSelected = false;
     public CardsController controller;
 
     public void OnCardClick()
@@ -50,16 +50,4 @@ public class Card : MonoBehaviour
             isSelected = false;
         });
     }
-
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 }
