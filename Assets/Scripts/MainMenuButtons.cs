@@ -24,7 +24,6 @@ public class MainMenuButtons : MonoBehaviour
             } else{
                 Debug.LogException(new Exception("Texto informado não é um Número"));
             }
-            print(casas[casas.Count-1].GetNomeCasa());
         }
         
         CasasData.SetCasas(casas);

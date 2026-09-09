@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using TMPro;
 using PrimeTween;
-using Unity.VisualScripting;
+using UnityEngine.EventSystems;
 
 public class CardsController : MonoBehaviour
 {
@@ -14,6 +14,8 @@ public class CardsController : MonoBehaviour
     [SerializeField] Transform gridTransform;
     [SerializeField] Sprite[] spritesConceito;
     [SerializeField] Sprite[] spritesDefinicao;
+    [SerializeField] ScoreManagement scoreManagement;
+    [SerializeField] GameController gameController;
     List<int> listaDeIdCartas = new List<int>();
     List<Card> listaCartas = new List<Card>();
     Card primeiraCartaSelecionada;
@@ -60,6 +62,7 @@ public class CardsController : MonoBehaviour
 
                 card.controller = this;
                 listaCartas.Add(card);
+                card.transform.localScale = Vector3.zero;
                 idCarta++;
             }
         }
@@ -77,6 +80,7 @@ public class CardsController : MonoBehaviour
 
                 card.controller = this;
                 listaCartas.Add(card);
+                card.transform.localScale = Vector3.zero;
                 idCarta++;
             }
         }
@@ -138,6 +142,7 @@ public class CardsController : MonoBehaviour
 
         if (carta1.idGroupo == carta2.idGroupo){
             ParCorreto(carta1, carta2);
+            scoreManagement.PremiarCasa();
         } else{
             ParIncorreto(carta1, carta2);
         }
@@ -164,9 +169,28 @@ public class CardsController : MonoBehaviour
     }
 
     void MostrarFeedback(){
-        Tween.Scale(feedback.transform, Vector3.one, 0.2f).OnComplete(() =>
-            Tween.Delay(2f, () => Tween.Scale(feedback.transform, Vector3.zero, 0.2f))
-        );
+        if (feedback.transform.localScale != Vector3.one){   
+            Tween.Scale(feedback.transform, Vector3.one, 0.2f).OnComplete(() =>
+                Tween.Delay(2f, () => Tween.Scale(feedback.transform, Vector3.zero, 0.2f))
+            );
+        }
+    }
+
+    IEnumerator AnimarCartas()
+    {
+        EventSystem eventSystem = EventSystem.current;
+
+        eventSystem.enabled = false;
+
+        foreach (Transform carta in gridTransform)
+        {
+            Tween.Scale(carta, Vector3.one, 0.25f, Ease.OutBack);
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        gameController.TelaRounds();
+
+        eventSystem.enabled = true;
     }
 
     public int GetNumberCards(){
@@ -184,6 +208,7 @@ public class CardsController : MonoBehaviour
     void Start(){
         scriptZoomCard = zoomCard.GetComponent<ZoomCards>();
         PrepararCartas();
+        StartCoroutine(AnimarCartas());
         gridTransform.gameObject.SetActive(true);
     }  
 }

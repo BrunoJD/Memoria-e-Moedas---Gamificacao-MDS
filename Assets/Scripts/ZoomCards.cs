@@ -7,25 +7,49 @@ public class ZoomCards : MonoBehaviour
 {
     [SerializeField] Image carta1Sprite;
     [SerializeField] Image carta2Sprite;
+    [SerializeField] GameController gameController;
+
     Card carta1;
     Card carta2;
+
     bool isZoomShow;
     bool isFecharAllowed = false;
+
+    Tween scaleTween;
 
     public void ShowZoomCard(){
         isZoomShow = true;
         isFecharAllowed = false;
 
-        Tween.Scale(transform, Vector3.one, 0.2f).OnComplete(() => isFecharAllowed = true);
+        scaleTween.Stop();
+
+        if (transform.localScale == Vector3.one){
+            isFecharAllowed = true;
+            return;
+        }
+
+        scaleTween = Tween.Scale(transform,Vector3.one,0.2f).OnComplete(() =>{
+            isFecharAllowed = true;
+        });
     }
 
     public void HideZoomCard(){
-        Tween.Scale(transform, Vector3.zero, 0.2f).OnComplete(() =>{
+        if (!isZoomShow) return;
+
+        isFecharAllowed = false;
+        scaleTween.Stop();
+
+        if (transform.localScale == Vector3.zero){
             isZoomShow = false;
-            
-            if(carta2Sprite.sprite != null){
-                DisableZoomCard();
-            }  
+            if (carta2Sprite.sprite != null) DisableZoomCard();
+
+            return;
+        }
+
+        scaleTween = Tween.Scale(transform, Vector3.zero, 0.2f).OnComplete(() =>{
+            isZoomShow = false;
+
+            if (carta2Sprite.sprite != null) DisableZoomCard();
         });
     }
 
@@ -39,7 +63,7 @@ public class ZoomCards : MonoBehaviour
 
         carta2Sprite.sprite = null;
         carta2Sprite.gameObject.SetActive(false);
-
+        gameController.TelaRounds();
     }
 
     public void VirarCartas(){
@@ -52,6 +76,7 @@ public class ZoomCards : MonoBehaviour
             carta1 = carta;
             carta1Sprite.sprite = carta.spriteEscondido;
             carta1Sprite.gameObject.SetActive(true);
+
             ShowZoomCard();
         }
     }
@@ -61,6 +86,7 @@ public class ZoomCards : MonoBehaviour
             carta2 = carta;
             carta2Sprite.sprite = carta.spriteEscondido;
             carta2Sprite.gameObject.SetActive(true);
+
             ShowZoomCard();
         }
     }
@@ -69,16 +95,7 @@ public class ZoomCards : MonoBehaviour
         return isZoomShow;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-    
-    }
-    
-
-    // Update is called once per frame
-    void Update()
-    {
+    void Update(){
         if (IsZoomShow() && isFecharAllowed && Mouse.current.leftButton.wasPressedThisFrame){
             HideZoomCard();
         }

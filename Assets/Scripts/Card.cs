@@ -7,8 +7,7 @@ public enum CardType {
     Conceito, Definicao
 }
 
-public class Card : MonoBehaviour
-{
+public class Card : MonoBehaviour{
 
     [SerializeField] Image imagemPrincipal;
     [SerializeField] public TextMeshProUGUI idCarta;
@@ -30,6 +29,8 @@ public class Card : MonoBehaviour
     }
 
     public void showCard(){
+        if (transform.localEulerAngles.y > 179f && transform.localEulerAngles.y < 181f) return;
+
         Tween.Rotation(transform, new Vector3 (0f, -180f, 0f), 0.5f);
 
         Tween.Delay(0.15f, () => {
@@ -41,6 +42,8 @@ public class Card : MonoBehaviour
     }
 
     public void hideCard(){
+        if (Mathf.Abs(transform.localEulerAngles.y) < 0.1f)return;
+        
         Tween.Rotation(transform, new Vector3 (0f, 0f, 0f), 0.5f);
 
         Tween.Delay(0.15f, () => {

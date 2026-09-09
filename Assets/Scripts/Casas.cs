@@ -1,11 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-public class Casas
-{
+public class Casas{
     Sprite iconCasa;
     string nomeCasa;
     int numeroMoedas;
     int numeroPontos;
+    //public List<ActionCards> inventario = new List<ActionCards>();
 
     public Casas(Sprite iconCasa, string nomeCasa, int numeroMoedas, int numeroPontos){
         SetIconCasa(iconCasa);
@@ -30,6 +31,10 @@ public class Casas
         this.numeroPontos = numeroPontos;
     }
 
+    /* public void SetActionCard(ActionCards card){
+        inventario.Add(card);
+    } */
+
     public Sprite GetCasaSprite(){
         return iconCasa;
     }
@@ -45,4 +50,8 @@ public class Casas
     public int GetPontos(){
         return numeroPontos;
     }
+
+    /* public List<ActionCards> GetActionCards(){
+        return inventario;
+    } */
 }
