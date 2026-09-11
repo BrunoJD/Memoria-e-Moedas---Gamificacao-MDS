@@ -1,19 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class AnimationController : MonoBehaviour
 {
-    Animator animator;
+    private Animator animator;
 
-    void Start(){
+    private void Start()
+    {
         animator = GetComponent<Animator>();
     }
 
-    void Update()
-    {
+    private void Update(){
         if (Mouse.current.leftButton.wasPressedThisFrame){
             animator.SetTrigger("CanExit");
-        }   
+        }
     }
 
     public void DesableObject(){

@@ -6,7 +6,7 @@ public class ScoreManagement : MonoBehaviour
     [SerializeField] GameObject playerSlot;
     
     [SerializeField] Transform gridTransform;
-    List<CasaSlotUI> listaSlots = new List<CasaSlotUI>();
+    List<CasaSlotUIGame> listaSlots = new List<CasaSlotUIGame>();
     List<Casas> listaDadosPlayers;
     Casas casaAtual;
     public int rodadaAtual;
@@ -19,10 +19,10 @@ public class ScoreManagement : MonoBehaviour
 
         foreach (Casas casa in listaDadosPlayers){
             GameObject newSlot = Instantiate(playerSlot, gridTransform);
-            CasaSlotUI slotUI = newSlot.GetComponent<CasaSlotUI>();
+            CasaSlotUIGame slotUI = newSlot.GetComponent<CasaSlotUIGame>();
 
             if(slotUI != null){
-                slotUI.SetSlot(casa.GetCasaSprite(), casa.GetNomeCasa(), casa.GetPontos(), casa.GetMoedas());
+                slotUI.SetSlot(casa.GetCasaSprite(), casa.GetNomeCasa(), casa.GetPontos(), casa.GetMoedas(), casa);
 
                 listaSlots.Add(slotUI);
             }
@@ -35,11 +35,11 @@ public class ScoreManagement : MonoBehaviour
     }
 
     public void MudarTruno(){
+        turnoAtual++;
         if (turnoAtual > listaDadosPlayers.Count-1){
             turnoAtual = 0;
             MudarRound();
         }
-        turnoAtual++;
     }
 
     public int MudarRound(){
@@ -57,8 +57,13 @@ public class ScoreManagement : MonoBehaviour
         casaAtual.SetNumeroMoedas(moedas);
         casaAtual.SetNumeroPontos(pontos);
 
-        CasaSlotUI slotAtual = listaSlots[turnoAtual-1];
-        slotAtual.SetSlot(casaAtual.GetCasaSprite(), casaAtual.GetNomeCasa(), casaAtual.GetPontos(), casaAtual.GetMoedas());
+        CasaSlotUIGame slotAtual = listaSlots[turnoAtual];
+        slotAtual.SetSlot(casaAtual.GetCasaSprite(), casaAtual.GetNomeCasa(), casaAtual.GetPontos(), casaAtual.GetMoedas(), casaAtual);
+    }
+
+    public void AtualizarLoja(int moedas){
+        CasaSlotUIGame slotAtual = listaSlots[turnoAtual];
+        slotAtual.SetMoedas(moedas);
     }
 
     void Start()

@@ -10,7 +10,8 @@ public class GameController : MonoBehaviour
     [SerializeField] ZoomCards scriptZoomCard;
     [SerializeField] Transform gridTransform;
     [SerializeField] GameObject RoundsScreen;
-    [SerializeField] Sprite emptyActionCard;
+    [SerializeField] GameObject ShopScreen;
+    [SerializeField] GameObject EditScreen;
     int numeroCartas;
     int paresEncontrados;
     public GameObject vitoria;
@@ -28,27 +29,58 @@ public class GameController : MonoBehaviour
 
     public void TelaRounds(){
         RoundsScreen.gameObject.SetActive(true);
+
         int rodadaAtual = scoreManagement.GetRodadaAtual();
         casaAtual = scoreManagement.TurnoAtual();
 
         TMP_Text roundCount = RoundsScreen.transform.Find("Panel/RoundCount").GetComponent<TMP_Text>();
         Image casaIcon = RoundsScreen.transform.Find("Casa/CasaIcon").GetComponent<Image>();
-        Image cartaAcao1 = RoundsScreen.transform.Find("CartaAcao/Carta1").GetComponent<Image>();
-        Image cartaAcao2 = RoundsScreen.transform.Find("CartaAcao/Carta2").GetComponent<Image>();
         TMP_Text casaName = RoundsScreen.transform.Find("Casa/CasaName").GetComponent<TMP_Text>();
-        TMP_Text descricaoAction = RoundsScreen.transform.Find("CartasAcao/Descricao").GetComponent<TMP_Text>();
 
         roundCount.text = "Rodada " + rodadaAtual;
         casaIcon.sprite = casaAtual.GetCasaSprite();
         casaName.text = casaAtual.GetNomeCasa();
+    }
 
-        //if (casaAtual.GetActionCards() == null || casaAtual.GetActionCards()[0] == null){
-            cartaAcao1.sprite = emptyActionCard;
-        //}
+    public void TelaShop(){
+        ShopScreen.gameObject.SetActive(true);
+        casaAtual = scoreManagement.TurnoAtual();
 
-        //if (casaAtual.GetActionCards() == null || casaAtual.GetActionCards()[1] == null){
-            cartaAcao2.sprite = emptyActionCard;
-        //}
+        Image casaIcon = ShopScreen.transform.Find("Casa/CasaIcon").GetComponent<Image>();
+        TMP_Text casaName = ShopScreen.transform.Find("Casa/CasaName").GetComponent<TMP_Text>();
+        TMP_Text casaMoedas = ShopScreen.transform.Find("Moedas/CasaMoedas").GetComponent<TMP_Text>();
+
+        casaIcon.sprite = casaAtual.GetCasaSprite();
+        casaName.text = casaAtual.GetNomeCasa();
+        casaMoedas.text = casaAtual.GetMoedas() + " moedas";
+    }
+    public void TelaEdit(Casas casaEdit){
+        EditScreen.gameObject.SetActive(true);
+
+        Image casaIcon = EditScreen.transform.Find("Casa/CasaIcon").GetComponent<Image>();
+        TMP_Text casaName = EditScreen.transform.Find("Casa/CasaName").GetComponent<TMP_Text>();
+        TMP_Text casaMoedas = EditScreen.transform.Find("Moedas/CasaMoedas").GetComponent<TMP_Text>();
+        TMP_Text casaPontos = EditScreen.transform.Find("Pontos/CasaPontos").GetComponent<TMP_Text>();
+
+        casaIcon.sprite = casaEdit.GetCasaSprite();
+        casaName.text = casaEdit.GetNomeCasa();
+        casaMoedas.text = casaEdit.GetMoedas() + " moedas";
+        casaPontos.text = casaEdit.GetPontos() + " pontos";
+    }
+
+    public void FinalizarLoja(int moedas){
+        casaAtual.SetNumeroMoedas(moedas);
+        scoreManagement.AtualizarLoja(moedas);
+        scoreManagement.MudarTruno();
+        TelaRounds();
+    }
+
+    public void ConfirmarEdicao(int moedas, int pontos, CasaSlotUIGame slotEdit, Casas casaEdit){
+        casaEdit.SetNumeroMoedas(moedas);
+        casaEdit.SetNumeroPontos(pontos);
+
+        slotEdit.SetMoedas(moedas);
+        slotEdit.SetPontos(pontos);
     }
 
     void Start()

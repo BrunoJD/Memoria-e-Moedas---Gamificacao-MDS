@@ -58,12 +58,13 @@ public class ZoomCards : MonoBehaviour
             VirarCartas();
         }
 
+        gameController.TelaShop();
+
         carta1Sprite.sprite = null;
         carta1Sprite.gameObject.SetActive(false);
 
         carta2Sprite.sprite = null;
         carta2Sprite.gameObject.SetActive(false);
-        gameController.TelaRounds();
     }
 
     public void VirarCartas(){

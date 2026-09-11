@@ -13,7 +13,14 @@ public class CasaSlotUI : MonoBehaviour
     public void SetSlot(Sprite sprite, string nome, int pontos, int moedas){
         casaSprite.sprite = sprite;
         casaNome.text = nome;
+        SetPontos(pontos);
+        SetMoedas(moedas);
+    }
+
+    public void SetPontos(int pontos){
         casaPontos.text = $"{pontos} pontos";
+    }
+    public void SetMoedas(int moedas){
         casaMoedas.text = $"{moedas} moedas";
     }
 }
